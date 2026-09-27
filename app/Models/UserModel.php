@@ -3,16 +3,30 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class UserModel extends Model
 {
-    use HasFactory;
-
     protected $table = 'user';
-    protected $guarded = 'id';
 
-    public function kelas()
+    protected $fillable = [
+        'nama',
+        'nim',
+        'kelas_id',
+    ];
+
+    public function getUser()
     {
-        return $this->belongsTo(Kelas::class, 'kelas_id');
+        return DB::table('user')
+            ->join('kelas', 'user.kelas_id', '=', 'kelas.id')
+            ->select(
+                'user.id',
+                'user.nama',
+                'user.nim',
+                'user.kelas_id',
+                'kelas.nama_kelas'
+            )
+            ->orderBy('user.id')
+            ->get();
     }
 }
