@@ -91,10 +91,15 @@
                 </p>
             </div>
 
-            <span class="data-count">
-                {{ $users->count() }} Data
-            </span>
+            <div class="d-flex align-items-center gap-3">
+                <span class="data-count">
+                    {{ $users->count() }} Data
+                </span>
 
+                <a href="{{ route('user.create') }}" class="btn-add-user">
+                    + Tambah User
+                </a>
+            </div>
         </div>
 
 
@@ -110,6 +115,7 @@
                             <th>Nama</th>
                             <th>NPM</th>
                             <th>Kelas</th>
+                            <th width="20%" class="text-end">Aksi</th>
                         </tr>
                     </thead>
 
@@ -120,8 +126,8 @@
                             <tr>
 
                                 <td>
-                                    <span class="user-number">
-                                        {{ $user->id }}
+                                    <span class="user-number" title="{{ $user->id }}">
+                                        {{ \Illuminate\Support\Str::limit($user->id, 8, '…') }}
                                     </span>
                                 </td>
 
@@ -139,8 +145,33 @@
 
                                 <td>
                                     <span class="class-badge">
-                                        {{ $user->nama_kelas }}
+                                        {{ $user->nama_kelas ?? '-' }}
                                     </span>
+                                </td>
+
+                                <td class="text-end">
+                                    <div class="action-group">
+
+                                        <a href="{{ route('user.edit', $user->id) }}" class="btn-action btn-edit">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                                            Edit
+                                        </a>
+
+                                        <form
+                                            action="{{ route('user.destroy', $user->id) }}"
+                                            method="POST"
+                                            data-confirm="Data {{ $user->nama }} akan dihapus permanen dari database."
+                                        >
+                                            @csrf
+                                            @method('DELETE')
+
+                                            <button type="submit" class="btn-action btn-delete">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                                                Hapus
+                                            </button>
+                                        </form>
+
+                                    </div>
                                 </td>
 
                             </tr>
@@ -148,7 +179,7 @@
                         @empty
 
                             <tr>
-                                <td colspan="4" class="text-center py-5">
+                                <td colspan="5" class="text-center py-5">
                                     Belum ada data pengguna.
                                 </td>
                             </tr>

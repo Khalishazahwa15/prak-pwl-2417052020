@@ -10,8 +10,9 @@
                 User
             </a>
 
-            <a href="{{ route('user.create') }}" class="btn btn-add">
-                + Tambah User
+            <a href="{{ route('matakuliah.index') }}"
+               class="nav-link {{ request()->routeIs('matakuliah.*') ? 'active' : '' }}">
+                Mata Kuliah
             </a>
         </div>
     </div>

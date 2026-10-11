@@ -322,6 +322,132 @@
             box-shadow: 0 0 0 3px rgba(223, 181, 111, 0.12);
         }
 
+
+        .btn-add-user {
+            background: #dfb56f;
+            color: #ffffff !important;
+            border: none;
+            padding: 10px 17px;
+            border-radius: 9px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .btn-add-user:hover {
+            background: #d2a45c;
+            color: #ffffff !important;
+        }
+
+        /* =========================
+        ACTION BUTTONS (Edit / Hapus)
+        ========================= */
+
+        .action-group {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .action-group form {
+            margin: 0;
+        }
+
+        .btn-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 13px;
+            border-radius: 9px;
+            border: 1px solid transparent;
+            font-size: 13px;
+            font-weight: 600;
+            line-height: 1;
+            text-decoration: none;
+            cursor: pointer;
+            transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
+        }
+
+        .btn-action svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .btn-action:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(32, 44, 63, 0.10);
+        }
+
+        .btn-edit {
+            background: #fff4df;
+            color: #8a642d;
+            border-color: #f3dfb8;
+        }
+
+        .btn-edit:hover {
+            background: #ffe9bd;
+            color: #7a5520;
+        }
+
+        .btn-delete {
+            background: #fdecec;
+            color: #b4372f;
+            border-color: #f6caca;
+        }
+
+        .btn-delete:hover {
+            background: #fbd7d5;
+            color: #9c2a23;
+        }
+
+        /* =========================
+        FLASH ALERT
+        ========================= */
+
+        .alert-flash {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            border: 1px solid transparent;
+            border-radius: 12px;
+            padding: 14px 16px;
+            font-size: 14px;
+            margin-bottom: 0;
+        }
+
+        .alert-flash-icon {
+            flex: 0 0 26px;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .alert-flash-success {
+            background: #e9f7ef;
+            border-color: #bfe5cf;
+            color: #1f6b46;
+        }
+
+        .alert-flash-success .alert-flash-icon {
+            background: #39966a;
+        }
+
+        .alert-flash-error {
+            background: #fdecec;
+            border-color: #f6caca;
+            color: #98302a;
+        }
+
+        .alert-flash-error .alert-flash-icon {
+            background: #d6453d;
+        }
+
         /* =========================
         FOOTER
         ========================= */
@@ -371,6 +497,8 @@
     <x-navbar />
 
     <main>
+        <x-alert />
+
         @yield('content')
     </main>
 
@@ -380,6 +508,46 @@
 
 <script
     src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    // Konfirmasi hapus: <form data-confirm="Pesan..."> akan memunculkan dialog dulu
+    document.querySelectorAll('form[data-confirm]').forEach(function (form) {
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            var message = form.getAttribute('data-confirm');
+
+            // Fallback kalau SweetAlert gagal dimuat (mis. offline)
+            if (typeof Swal === 'undefined') {
+                if (confirm(message)) form.submit();
+                return;
+            }
+
+            Swal.fire({
+                title: 'Yakin hapus data?',
+                text: message,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, hapus',
+                cancelButtonText: 'Batal',
+                confirmButtonColor: '#d6453d',
+                cancelButtonColor: '#8992a2',
+                reverseButtons: true
+            }).then(function (result) {
+                if (result.isConfirmed) form.submit();
+            });
+        });
+    });
+
+    // Alert sukses hilang otomatis setelah 5 detik
+    document.querySelectorAll('.alert-flash-success').forEach(function (el) {
+        setTimeout(function () {
+            if (window.bootstrap) bootstrap.Alert.getOrCreateInstance(el).close();
+        }, 5000);
+    });
 </script>
 
 </body>
